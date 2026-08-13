@@ -1,233 +1,99 @@
-import React, {useEffect, useState} from 'react';
+import React from "react";
+import { Modal, View, Text, Pressable, ScrollView } from "react-native";
 import {
-  Modal,
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-} from 'react-native';
-import {CustomColor, device} from '../../../ults';
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import Toast from 'react-native-toast-message';
-import {CompanyDataType} from '../type';
-import {AppColors} from '../../../../colors';
+  faXmark,
+  faBuilding,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+
+// Danh sách danh mục công ty/chi nhánh mẫu
+const COMPANY_LIST = [{ id: "TIENPHONGNAM", name: "TIENPHONGNAM" }];
+
 type CompanyModalProps = {
-  handleOpenCompanyModal: () => void;
-  onSubmit: (data: CompanyDataType) => void;
   open: boolean;
-  title: string;
+  title?: string;
+  selectedTenant?: string;
+  onSelectCompany: (companyName: string) => void;
+  onClose: () => void;
 };
-const CompanyModal = (props: CompanyModalProps) => {
-  const {handleOpenCompanyModal, onSubmit, open, title} = props;
-  const handlecancel = () => {
-    handleOpenCompanyModal();
+
+const CompanyModal = ({
+  open,
+  title = "Chọn công ty",
+  selectedTenant,
+  onSelectCompany,
+  onClose,
+}: CompanyModalProps) => {
+  const handleSelect = (companyName: string) => {
+    onSelectCompany(companyName);
+    onClose();
   };
 
-  const handleSelected = (item: CompanyDataType) => {
-    onSubmit(item);
-    handleOpenCompanyModal();
-  };
-  const CompanyDta: CompanyDataType[] = [
-    {id: 1, name: 'Hai Nam'},
-    {id: 2, name: 'Hai Nam'},
-  ];
   return (
-    <Modal animationType="slide" transparent={true} visible={open}>
-      <View style={styles.centeredView}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.textStyle}>{title.toUpperCase()}</Text>
-              <Pressable
-                style={styles.closeButton}
-                onPress={handleOpenCompanyModal}>
-                <FontAwesomeIcon icon={faXmark} size={18} color="black" />
-              </Pressable>
-            </View>
-            <View style={styles.modalBody}>
-              {CompanyDta.length > 0 ? (
-                <View>
-                  <ScrollView>
-                    {CompanyDta.map((item: CompanyDataType, index: number) => {
-                      return (
-                        <Pressable
-                          onPress={() => handleSelected(item)}
-                          style={{
-                            ...styles.inLine,
-                            margin: 5,
-                            borderColor: CustomColor.colorList.grey_2,
-                            height: 40,
-                            padding: 5,
-                            borderRadius: 10,
-                            borderWidth: 1,
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                          }}
-                          key={index}>
-                          <View style={styles.inLine}>
-                            <Text style={styles.lineTitle}>Mã:</Text>
-                            <Text style={{color: AppColors.primary}}>
-                              {item.id}
-                            </Text>
-                          </View>
-                          <View style={{...styles.inLine, width: '50%'}}>
-                            <Text style={styles.lineTitle}>Ca:</Text>
-                            <Text style={{color: AppColors.primary}}>
-                              {item.name}
-                            </Text>
-                          </View>
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    height: 80,
-                    width: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <ActivityIndicator color={AppColors.primary} size={'large'} />
-                </View>
-              )}
-
-              <View style={styles.modalFooter}>
-                <Pressable
-                  onPress={handlecancel}
-                  style={{
-                    ...styles.pressableButton,
-                    backgroundColor: CustomColor.colorList.red,
-                  }}>
-                  <Text style={styles.textPressible}>Hủy</Text>
-                </Pressable>
-                {/* <Pressable
-                                    onPress={() => { }}
-                                    style={{ ...styles.pressableButton, backgroundColor: CustomColor.colorList.green }}>
-                                    <Text style={styles.textPressible}>Lưu</Text>
-                                </Pressable> */}
-              </View>
-            </View>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={open}
+      onRequestClose={onClose}
+    >
+      {/* Overlay nền mờ */}
+      <View className="flex-1 justify-center items-center bg-black/50 px-6">
+        {/* Modal Container */}
+        <View className="bg-white rounded-[30px] w-full max-w-sm shadow-2xl overflow-hidden">
+          {/* Header */}
+          <View className="flex-row justify-between items-center p-5 border-b border-slate-100">
+            <Text className="text-xl font-bold text-slate-800">{title}</Text>
+            <Pressable
+              onPress={onClose}
+              className="w-10 h-10 items-center justify-center rounded-full active:bg-slate-100"
+            >
+              <FontAwesomeIcon icon={faXmark} size={20} color="#64748b" />
+            </Pressable>
           </View>
-        </TouchableWithoutFeedback>
+
+          {/* Body - Danh sách các công ty */}
+          <ScrollView className="p-4 max-h-80">
+            {COMPANY_LIST.map((item) => {
+              const isSelected = selectedTenant === item.name;
+              return (
+                <Pressable
+                  key={item.id}
+                  onPress={() => handleSelect(item.name)}
+                  className={`flex-row items-center justify-between p-4 mb-3 rounded-2xl border ${
+                    isSelected
+                      ? "bg-red-50 border-red-400"
+                      : "bg-slate-50 border-slate-100 active:bg-slate-100"
+                  }`}
+                >
+                  <View className="flex-row items-center space-x-3 flex-1 mr-2">
+                    <FontAwesomeIcon
+                      icon={faBuilding}
+                      size={18}
+                      color={isSelected ? "#f87171" : "#94a3b8"}
+                    />
+                    <Text
+                      className={`text-base font-semibold ${
+                        isSelected ? "text-red-500" : "text-slate-700"
+                      }`}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                  {isSelected && (
+                    <FontAwesomeIcon icon={faCheck} size={16} color="#f87171" />
+                  )}
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {/* Footer */}
+          <View className="pb-3" />
+        </View>
       </View>
     </Modal>
   );
 };
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // marginTop: 22,
-  },
-  textStyle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalView: {
-    // margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '90%',
-    padding: 5,
-  },
-  modalHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    padding: 10,
-    borderBottomColor: CustomColor.colorList.grey_2,
-    borderBottomWidth: 1,
-    borderWidth: 0,
-  },
-  closeButton: {
-    width: '10%',
-  },
-  inLine: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 5,
-  },
-  modalBody: {
-    marginTop: 10,
-    width: '98%',
-  },
-  loadingView: {
-    width: '100%',
-    padding: 20,
-  },
-  options: {
-    display: 'flex',
-    flexDirection: 'column',
-    // gap: 5,
-  },
-  pressable: {
-    borderColor: CustomColor.colorList.grey,
-    borderWidth: 1,
-    borderRadius: 999,
-    padding: 10,
-    margin: 5,
-    width: '100%',
-    display: 'flex',
-    // justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lineView: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-  },
-  lineTitle: {
-    fontWeight: 'bold',
-  },
-  inputLine: {
-    borderWidth: 1,
-    borderColor: CustomColor.colorList.grey_2,
-    borderRadius: 10,
-    height: 40,
-  },
-  modalFooter: {
-    width: '100%',
-    padding: 10,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    // flexDirection: 'row',
-    // justifyContent: 'space-between'
-  },
-  pressableButton: {
-    borderRadius: 999,
-    height: 40,
-    width: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textPressible: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
+
 export default CompanyModal;

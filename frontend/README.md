@@ -2,7 +2,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
 
@@ -41,10 +41,19 @@ npm run ios
 # OR using Yarn
 yarn ios
 ```
+
 Build apk
 cd android
 ./gradlew clean
 ./gradlew assembleRelease
+
+## rename app:
+
+npx react-native-rename "TienPhongApp" -b com.tienphong.app --skipGitStatusCheck
+
+## gen icons app
+
+npx react-native set-icon --path src/Assets/imgs/icon-favicon.png
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 

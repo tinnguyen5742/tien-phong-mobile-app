@@ -1,4 +1,4 @@
-package com.qr_rn
+package com.tienphong.app
 
 import android.os.Build
 import android.util.Log

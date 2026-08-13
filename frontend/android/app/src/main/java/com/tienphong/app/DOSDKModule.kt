@@ -1,4 +1,4 @@
-package com.qr_rn.dosdk
+package com.tienphong.app.dosdk
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule

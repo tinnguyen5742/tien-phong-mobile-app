@@ -1,40 +1,19 @@
-//Db DuyNhat_daotao
-// export const api_url = 'https://nmt.logit.id.vn/duynhat_api/v1';
+export const api_url = "http://125.212.210.184:8060/api/v1";
 
-// api local test
-// export const api_url = 'http://192.168.1.205:4045/api/v1';
-// export const api_url = 'http://192.168.1.205:4045/api/v2';
-//server duynhat patsoft
-// export const api_url = 'http://42.1.111.50:4045/api/v1';
-export const api_url = 'http://42.1.111.50:4045/api/v2';
-
-//db HaiNam
-// export const api_url = 'http://42.1.111.50:4044/api/v1';
-
-//db HN_test
-// export const api_url = 'http://42.1.111.50:4045/api/v1';
-
-import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-/**
- * Hàm Helper nội bộ để lấy baseUrl dựa trên phiên bản API (v1 hoặc v2) KHÔNG DÙNG NỮA
- */
-// const getBaseUrl = (version: 'v1' | 'v2') => {
-//   return version === 'v2' ? api_url_v2 : api_url;
-// };
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * Hàm Helper nội bộ để lấy Token của user từ bộ nhớ thiết bị
  */
 const getAccessToken = async (): Promise<string | null> => {
   try {
-    const userRaw = await AsyncStorage.getItem('storeUSerData');
+    const userRaw = await AsyncStorage.getItem("storeUSerData");
     if (!userRaw) return null;
     const userData = JSON.parse(userRaw);
     return userData?.tokenID || null;
   } catch (error) {
-    console.error('Lỗi truy cập AsyncStorage:', error);
+    console.error("Lỗi truy cập AsyncStorage:", error);
     return null;
   }
 };
@@ -45,13 +24,13 @@ const getAccessToken = async (): Promise<string | null> => {
 const handleFetchResponse = async (response: Response) => {
   // 🌟 1. BẪY LỖI 401 NGAY TẠI ĐÂY (Kiểm tra mã trạng thái HTTP Status trước)
   if (response.status === 401) {
-    const errorMsg = 'Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.';
+    const errorMsg = "Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.";
     Toast.show({
-      type: 'error',
-      text1: 'Hết hạn phiên',
+      type: "error",
+      text1: "Hết hạn phiên",
       text2: errorMsg,
     });
-    throw {message: errorMsg, status: 401};
+    throw { message: errorMsg, status: 401 };
   }
 
   // Nếu HTTP Status không phải là 2xx (ví dụ 400, 500...)
@@ -59,14 +38,14 @@ const handleFetchResponse = async (response: Response) => {
     const errorData = await response.json().catch(() => ({}));
 
     // 🌟 2. PHÒNG HỜ: Nếu server trả về 200/400 nhưng cấu trúc dữ liệu JSON có chứa text "Unauthorized"
-    if (errorData?.Message === 'Unauthorized.') {
-      const errorMsg = 'Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.';
+    if (errorData?.Message === "Unauthorized.") {
+      const errorMsg = "Phiên đăng nhập đã hết hạn, hãy đăng nhập lại.";
       Toast.show({
-        type: 'error',
-        text1: 'Hết hạn phiên',
+        type: "error",
+        text1: "Hết hạn phiên",
         text2: errorMsg,
       });
-      throw {message: errorMsg, status: 401};
+      throw { message: errorMsg, status: 401 };
     }
 
     throw {
@@ -84,18 +63,18 @@ const handleFetchError = (error: any, apiName: string) => {
   if (error.status) throw error; // Lỗi đã cấu trúc (bao gồm cả 401 bên trên) thì quăng tiếp ra ngoài
 
   console.error(`❌ Lỗi kết nối mạng tại ${apiName}:`, error.message);
-  let errorMsg = 'Không thể kết nối đến máy chủ';
-  if (error.message === 'Failed to fetch') {
-    errorMsg = 'Lỗi kết nối mạng hoặc sai địa chỉ IP máy chủ';
+  let errorMsg = "Không thể kết nối đến máy chủ";
+  if (error.message === "Failed to fetch") {
+    errorMsg = "Lỗi kết nối mạng hoặc sai địa chỉ IP máy chủ";
   }
 
   Toast.show({
-    type: 'error',
-    text1: 'Lỗi',
+    type: "error",
+    text1: "Lỗi",
     text2: errorMsg,
   });
 
-  throw {message: errorMsg};
+  throw { message: errorMsg };
 };
 
 /**
@@ -104,18 +83,18 @@ const handleFetchError = (error: any, apiName: string) => {
 export const postApi = async (url: string, data: any) => {
   try {
     const token = await getAccessToken();
-    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, '$1');
-    console.log('fullUrl postApi: ', fullUrl);
+    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, "$1");
+    console.log("fullUrl postApi: ", fullUrl);
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(fullUrl, {
-      method: 'POST',
+      method: "POST",
       headers: headers,
       body: JSON.stringify(data),
     });
@@ -131,7 +110,7 @@ export const postApi = async (url: string, data: any) => {
         status: response.status,
         message: errorBody?.message || `Lỗi hệ thống (${response.status})`,
         data: errorBody?.data || null,
-        error: errorBody?.error || '',
+        error: errorBody?.error || "",
       };
       handleFetchError(customError, `POST ${url}`);
       throw customError;
@@ -152,16 +131,16 @@ export const postApi = async (url: string, data: any) => {
 export const postImgApi = async (url: string, formData: FormData) => {
   try {
     const token = await getAccessToken();
-    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, '$1');
-    console.log('🚀 fullUrl postImgApi: ', fullUrl);
+    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, "$1");
+    console.log("🚀 fullUrl postImgApi: ", fullUrl);
 
     const headers: Record<string, string> = {};
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(fullUrl, {
-      method: 'POST',
+      method: "POST",
       headers: headers,
       body: formData,
     });
@@ -179,8 +158,8 @@ export const postImgApi = async (url: string, formData: FormData) => {
 export const getApi = async (url: string, params?: Record<string, any>) => {
   try {
     const token = await getAccessToken();
-    let fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, '$1');
-    console.log('API gọi hàm getApi: ', fullUrl);
+    let fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, "$1");
+    console.log("API gọi hàm getApi: ", fullUrl);
 
     if (params && Object.keys(params).length > 0) {
       const queryString = new URLSearchParams(
@@ -190,14 +169,14 @@ export const getApi = async (url: string, params?: Record<string, any>) => {
     }
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(fullUrl, {
-      method: 'GET',
+      method: "GET",
       headers: headers,
     });
 
@@ -214,17 +193,17 @@ export const getApi = async (url: string, params?: Record<string, any>) => {
 export const putApi = async (url: string, data: any) => {
   try {
     const token = await getAccessToken();
-    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, '$1');
+    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, "$1");
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(fullUrl, {
-      method: 'PUT',
+      method: "PUT",
       headers: headers,
       body: JSON.stringify(data),
     });
@@ -242,17 +221,17 @@ export const putApi = async (url: string, data: any) => {
 export const deleteApi = async (url: string) => {
   try {
     const token = await getAccessToken();
-    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, '$1');
-    console.log('url delete: ', fullUrl);
+    const fullUrl = `${api_url}${url}`.replace(/([^:]\/)\/+/g, "$1");
+    console.log("url delete: ", fullUrl);
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(fullUrl, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: headers,
     });
 
@@ -268,20 +247,20 @@ export const deleteApi = async (url: string) => {
  */
 export const login = async (payload: object) => {
   try {
-    const loginUrl = `${api_url}/user/login`.replace(/([^:]\/)\/+/g, '$1');
-    console.log('🚀 Gọi API Login:', loginUrl);
+    const loginUrl = `${api_url}/auth/login2`.replace(/([^:]\/)\/+/g, "$1");
+    console.log("🚀 Gọi API Login:", loginUrl);
 
     const response = await fetch(loginUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
 
     return await handleFetchResponse(response);
   } catch (error: any) {
-    handleFetchError(error, 'LOGIN');
+    handleFetchError(error, "LOGIN");
     throw error;
   }
 };

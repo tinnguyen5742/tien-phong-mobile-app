@@ -1,20 +1,17 @@
-import {atom} from 'recoil';
-import {TypeFormQualityControl} from './type';
+import { atom } from "recoil";
+import { TypeFormQCHeader } from "./type";
 
 export const QualityControlStatusTypeAtom = atom({
-  key: 'QualityControlStatusTypeAtom',
-  default: 'NEW',
+  key: "QualityControlStatusTypeAtom",
+  default: "NEW",
 });
 
 export const QualityControlDetailID = atom({
-  key: 'QualityControlDetailID',
-  default: 0,
+  key: "QualityControlDetailID",
+  default: "",
 });
 
-export const QualityControlDetailAtom = atom<TypeFormQualityControl>({
-  key: 'QualityControlDetailAtom',
-  default: {
-    ngayKiem: new Date().toISOString(),
-    gioKiem: new Date().toISOString(),
-  } as TypeFormQualityControl, // Đóng vai trò là giá trị gốc
+export const QualityControlDetailAtom = atom<TypeFormQCHeader>({
+  key: "QualityControlDetailAtom",
+  default: {} as TypeFormQCHeader, // Đóng vai trò là giá trị gốc
 });
