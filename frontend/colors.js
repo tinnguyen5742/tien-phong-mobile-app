@@ -1,0 +1,32 @@
+const AppColors = {
+  logo: "#f7ef22",
+  default: "#DED846",
+  primary: "#289B7C",
+  primaryDark: "#001c24",
+  accent: "#f29131",
+  secondary: "#187c73",
+  light: "#e6f2f4",
+  white: "#fff",
+  error: "#ef4444",
+  success: "#32B85F",
+  warning: "#f29131",
+  colorList: {
+    black: "#191B26",
+    grey: "#666666",
+    grey_2: "#e3e5e8",
+    blue: "#005f78",
+    green: "#32B85F",
+    green_2: "#a6f3c5",
+    green_3: "#dafbe6",
+    yellow: "#FFB300",
+    red: "#FF5C5C",
+    pink: "#f47b81",
+    shadowWhite: "#FFF4F4",
+    shadowYellow: "#FFFBEF",
+    shadowBlue: "#EFF3F9",
+    shadowBlue2: "#A6B2DD",
+    shadowPurple: "#DCE0FF",
+  },
+};
+
+module.exports = { AppColors };

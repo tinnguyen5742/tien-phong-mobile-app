@@ -1,0 +1,11 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Luôn đặt nền trắng -->
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        
+        <!-- 🌟 ÉP ICON LUÔN MÀU ĐEN (True = Dark Icons) kể cả khi điện thoại bật Dark Mode -->
+        <item name="android:windowLightNavigationBar">true</item>
+        
+        <item name="android:enforceNavigationBarContrast">false</item>
+    </style>
+</resources>
