@@ -25,7 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 import { loadingStore } from "../../Store/loadingStore";
 import { formatDate, combineDateWithCurrentTime } from "../../ults";
 import { AppColors } from "../../../colors";
-import { getApi } from "../../Base/api/api_service";
+import { getApi, postApi } from "../../Base/api/api_service";
 import CameraScannerWrapper from "../../Base/CameraScannerWrapper/CameraScannerWrapper";
 import { getSettingValue } from "../Login/store/asyncUserStorage";
 import { settingStore } from "../../Store/settingStore";
@@ -315,9 +315,9 @@ const DetailQualityControl = () => {
         LsxNo: qrData,
         DiscreteID: qcData.DiscreteID,
         DiscreteNbr: qcData.DiscreteNbr,
-        LsxReft: qcData.LsxRef,
+        LsxRef: qcData.LsxRef,
         InventoryID: qcData.InventoryID,
-        InventoryIC: qcData.InventoryIC,
+        InventoryCD: qcData.InventoryCD,
         Uom: qcData.Uom,
         ProductionStandard: qcData.ProductionStandard,
       }));
@@ -366,7 +366,7 @@ const DetailQualityControl = () => {
     setFormValues((prevValues: any) => ({
       ...prevValues,
       Mfnong: item.MachineID,
-      MFNongDerc: item.MachineName,
+      MFNongDescr: item.MachineName,
     }));
   };
 
@@ -377,8 +377,8 @@ const DetailQualityControl = () => {
     setOpenModalLineDetail(true);
   };
 
-  const handleSaveForm = async (status: string) => {
-    if (!formValues) {
+  const handleSaveForm = async () => {
+    if (!formValues?.InventoryID) {
       Toast.show({
         type: "error",
         text1: "Lỗi",
@@ -386,9 +386,52 @@ const DetailQualityControl = () => {
       });
       return;
     }
-    setLoadingAtom(true);
 
-    setLoadingAtom(false);
+    const submitData = {
+      Header: formValues,
+      Details: lineValues,
+    };
+    console.log("Header", submitData);
+
+    try {
+      const url = "/APIMobile/SaveShiftTesting";
+      const resp = await postApi(url, submitData);
+      // console.log("🔴 Kiểm tra phản hồi API thành công - Resp:", resp);
+      if (resp.success && resp.data) {
+        Toast.show({
+          type: "success",
+          text1: "Thành công",
+          text2: "Lưu dữ liệu thành công",
+        });
+        navigate.goBack();
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: resp?.message || "Lưu thất bại",
+        });
+      }
+    } catch (err: any) {
+      // Khối catch này sẽ bắt được lỗi từ lệnh "throw error" trong postApi của bạn
+      console.log("🔴 Kiểm tra phản hồi lỗi API - Err: ", err);
+      if (err.status === 400) {
+        Toast.show({
+          type: "error",
+          text1: "Tình trạng phiếu đã đóng, không thể lưu!",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Đã có lỗi xảy ra vui lòng thử lại!",
+          text2:
+            err?.message || typeof err === "string"
+              ? err
+              : "Mã phản hồi không hợp lệ hoặc trùng lặp kho",
+        });
+      }
+    } finally {
+      setLoadingAtom(false); // Đảm bảo luôn luôn tắt loading dù thành công hay thất bại
+    }
   };
 
   const insets = useSafeAreaInsets();
@@ -409,7 +452,7 @@ const DetailQualityControl = () => {
           iconRight={
             isScanned ? (
               <View className="flex-row items-center pr-2">
-                <TouchableOpacity onPress={() => handleSaveForm("complete")}>
+                <TouchableOpacity onPress={() => handleSaveForm()}>
                   <FontAwesomeIcon
                     icon={faSave}
                     size={25}
@@ -435,9 +478,9 @@ const DetailQualityControl = () => {
           </View>
         ) : (
           <ScrollView className="flex-1 p-3">
-            <Text style={{ fontFamily: "monospace" }} className="text-gray-900">
+            {/* <Text style={{ fontFamily: "monospace" }} className="text-gray-900">
               {JSON.stringify(formValues, null, 2)}
-            </Text>
+            </Text> */}
             {/* <Text style={{ fontFamily: "monospace" }} className="text-gray-900">
               {JSON.stringify(lineValues, null, 2)}
             </Text> */}
@@ -469,26 +512,29 @@ const DetailQualityControl = () => {
                   </Text>
                 </Pressable>
               </View>
-
-              <View className="flex-row justify-between items-center border-b border-gray-200 py-3">
-                <Text className="font-medium text-gray-600">LSX No:</Text>
-                <View className="flex-row items-center">
-                  <Text className="text-primary font-bold mr-2">
-                    {formValues?.LsxNo}
-                  </Text>
-                  {statusTypeValue !== "EDIT" ? (
-                    <TouchableOpacity onPress={() => setShowCameraModal(true)}>
-                      <FontAwesomeIcon
-                        icon={faRotateRight}
-                        size={16}
-                        color={AppColors.primary}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <View />
-                  )}
+              {formValues?.LsxNo && (
+                <View className="flex-row justify-between items-center border-b border-gray-200 py-3">
+                  <Text className="font-medium text-gray-600">LSX No:</Text>
+                  <View className="flex-row items-center">
+                    <Text className="text-primary font-bold mr-2">
+                      {formValues?.LsxNo}
+                    </Text>
+                    {statusTypeValue !== "EDIT" ? (
+                      <TouchableOpacity
+                        onPress={() => setShowCameraModal(true)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faRotateRight}
+                          size={16}
+                          color={AppColors.primary}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <View />
+                    )}
+                  </View>
                 </View>
-              </View>
+              )}
 
               <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
                 <Text className="text-gray-600 font-medium">LSX Ref:</Text>
@@ -500,7 +546,7 @@ const DetailQualityControl = () => {
               <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
                 <Text className="text-gray-600 font-medium">Inventory CD:</Text>
                 <Text className="text-gray-900 font-bold">
-                  {formValues?.InventoryID}
+                  {formValues?.InventoryCD}
                 </Text>
               </View>
 
@@ -558,8 +604,8 @@ const DetailQualityControl = () => {
                   onPress={handleMFNongModal}
                 >
                   <Text className="text-gray-800 text-right">
-                    {formValues?.MFNongDerc
-                      ? formValues?.MFNongDerc
+                    {formValues?.MFNongDescr
+                      ? formValues?.MFNongDescr
                       : "Select MF Nong"}
                   </Text>
                 </Pressable>

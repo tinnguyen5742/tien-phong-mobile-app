@@ -50,7 +50,6 @@ const QCLineModal = (props: QCLineModalProps) => {
       Alert.alert("Thông báo", "Vui lòng kiểm tra lại dữ liệu.");
       return;
     }
-
     // CHỈ CẦN GỌI onSubmit, để component cha tự đóng Modal sau khi lưu thành công
     if (typeof props?.onSubmit === "function") {
       props.onSubmit(dataSubmit);
@@ -158,7 +157,7 @@ const QCLineModal = (props: QCLineModalProps) => {
                     <TextInput
                       className="h-20 border border-slate-200 rounded-xl px-4 py-2 bg-slate-50 text-slate-800 text-sm align-top focus:border-cyan-500"
                       placeholder="Enter description..."
-                      value={dataSubmit?.Description?.toString() ?? ""}
+                      value={dataSubmit?.Description}
                       multiline={true}
                       onChangeText={(text) =>
                         handleInputChange("Description", text)

@@ -71,25 +71,25 @@ const LoginNavigate = () => {
   };
 
   const submit = async () => {
-    // if (!formValues.username?.trim() || !formValues.password) {
-    //   Toast.show({
-    //     type: "error",
-    //     text1: "Thiếu thông tin",
-    //     text2: "Vui lòng nhập đầy đủ tài khoản và mật khẩu",
-    //   });
-    //   return;
-    // }
+    if (!formValues.username?.trim() || !formValues.password) {
+      Toast.show({
+        type: "error",
+        text1: "Thiếu thông tin",
+        text2: "Vui lòng nhập đầy đủ tài khoản và mật khẩu",
+      });
+      return;
+    }
 
     setLoadingAtom(true);
 
     try {
       const body = {
-        // Username: formValues.username.trim(),
-        // Password: formValues.password,
-        // Tenant: formValues.tenant,
-        Username: "admin",
-        Password: "6789@6789",
-        Tenant: "TIENPHONGNAM",
+        Username: formValues.username.trim(),
+        Password: formValues.password,
+        Tenant: formValues.tenant,
+        // Username: "admin",
+        // Password: "6789@6789",
+        // Tenant: "TIENPHONGNAM",
       };
 
       const result = await login(body);

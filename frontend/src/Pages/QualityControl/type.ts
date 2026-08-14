@@ -30,7 +30,7 @@ export type TypeFormQCHeader = {
   Uom?: string;
   ProductionStandard?: string;
   DiscreteNbr?: string;
-  MFNongDerc?: string;
+  MFNongDescr?: string;
 };
 
 export type TypeFormQCDetail = {

@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingComponent from "./Base/LoadingComponent/LoadingComponent";
 import { loadingStore } from "./Store/loadingStore";
 import QualityControlNavigate from "./Pages/QualityControl";
+import SettingPage from "./Pages/Setting";
 
 const AppNaivgate = () => {
   const Stack = createNativeStackNavigator();
@@ -51,6 +52,7 @@ const AppNaivgate = () => {
                 name="QualityControlNavigate"
                 component={QualityControlNavigate}
               />
+              <Stack.Screen name="Setting" component={SettingPage} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginNavigate} />
