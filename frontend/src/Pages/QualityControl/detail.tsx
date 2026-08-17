@@ -25,7 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 import { loadingStore } from "../../Store/loadingStore";
 import { formatDate, combineDateWithCurrentTime } from "../../ults";
 import { AppColors } from "../../../colors";
-import { getApi, postApi } from "../../Base/api/api_service";
+import { getApi, postApi } from "../../Base/api/api_service__";
 import CameraScannerWrapper from "../../Base/CameraScannerWrapper/CameraScannerWrapper";
 import { getSettingValue } from "../Login/store/asyncUserStorage";
 import { settingStore } from "../../Store/settingStore";
@@ -286,7 +286,7 @@ const DetailQualityControl = () => {
   };
 
   const getQC = async (lsx: string) => {
-    setLoadingAtom(true);
+    // setLoadingAtom(true);
     try {
       // Truyền biến currentPage động vào chuỗi API query string
       const api = `/APIMobile/ShiftTestingDiscreteJob?discreteNbr=${lsx}`;
@@ -299,7 +299,7 @@ const DetailQualityControl = () => {
     } catch (error: any) {
       console.log(error);
     } finally {
-      setLoadingAtom(false);
+      // setLoadingAtom(false);
     }
   };
 

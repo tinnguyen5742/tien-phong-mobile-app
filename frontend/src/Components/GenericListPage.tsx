@@ -1,22 +1,22 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import {useSetRecoilState} from 'recoil';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useSetRecoilState } from "recoil";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faArrowsRotate,
   faPlus,
   faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Toast from 'react-native-toast-message';
+} from "@fortawesome/free-solid-svg-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
-import HeaderComponent from '../Base/HeaderComponent/headerComponent'; // Chỉnh lại đường dẫn của bạn
-import GeneralTable, {TableColumn} from '../Components/GeneralTable';
-import Pagination from '../Components/Pagination';
-import {loadingStore} from '../Store/loadingStore';
-import {getApi, deleteApi} from '../Base/api/api_service';
-import {AppColors} from '../../colors';
+import HeaderComponent from "../Base/HeaderComponent/headerComponent"; // Chỉnh lại đường dẫn của bạn
+import GeneralTable, { TableColumn } from "../Components/GeneralTable";
+import Pagination from "../Components/Pagination";
+import { loadingStore } from "../Store/loadingStore";
+import { getApi, deleteApi } from "../Base/api/api_service__";
+import { AppColors } from "../../colors";
 
 interface GenericListPageProps<T> {
   title: string;
@@ -40,7 +40,7 @@ interface GenericListPageProps<T> {
   onEdit: (item: T) => void;
 }
 
-function GenericListPage<T extends {id?: any; [key: string]: any}>({
+function GenericListPage<T extends { id?: any; [key: string]: any }>({
   title,
   fetchUrl,
   params,
@@ -67,11 +67,11 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
       const response = await getApi(fetchUrl, params);
       if (response && response.data) {
         const sortedData = [...response.data].sort((a, b) => {
-          const valA = String(a[sortKey] || '');
-          const valB = String(b[sortKey] || '');
+          const valA = String(a[sortKey] || "");
+          const valB = String(b[sortKey] || "");
           return valA.localeCompare(valB, undefined, {
             numeric: true,
-            sensitivity: 'base',
+            sensitivity: "base",
           });
         });
         setList(sortedData);
@@ -88,11 +88,11 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
   };
 
   const handleDeleteItem = (item: T) => {
-    Alert.alert('Xác nhận xóa', deleteConfirmMessage(item), [
-      {text: 'Hủy', style: 'cancel'},
+    Alert.alert("Xác nhận xóa", deleteConfirmMessage(item), [
+      { text: "Hủy", style: "cancel" },
       {
-        text: 'Xóa bản ghi',
-        style: 'destructive',
+        text: "Xóa bản ghi",
+        style: "destructive",
         onPress: async () => {
           setLoadingAtom(true);
           try {
@@ -100,23 +100,23 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
             const response = await deleteApi(url);
             if (response && (response.status || response.success)) {
               Toast.show({
-                type: 'success',
-                text1: 'Thành công',
-                text2: 'Đã xóa thành công!',
+                type: "success",
+                text1: "Thành công",
+                text2: "Đã xóa thành công!",
               });
               getList();
             } else {
               Toast.show({
-                type: 'error',
-                text1: 'Thất bại',
-                text2: response?.message || 'Yêu cầu xóa thất bại',
+                type: "error",
+                text1: "Thất bại",
+                text2: response?.message || "Yêu cầu xóa thất bại",
               });
             }
           } catch (error) {
             Toast.show({
-              type: 'error',
-              text1: 'Thất bại',
-              text2: 'Có lỗi xảy ra, vui lòng thử lại!',
+              type: "error",
+              text1: "Thất bại",
+              text2: "Có lỗi xảy ra, vui lòng thử lại!",
             });
           } finally {
             setLoadingAtom(false);
@@ -138,11 +138,12 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
   );
 
   const cellRenderer = (columnName: string, item: T) => {
-    if (columnName === 'Actions_Right') {
+    if (columnName === "Actions_Right") {
       return (
         <TouchableOpacity
           onPress={() => handleDeleteItem(item)}
-          className="justify-center items-center">
+          className="justify-center items-center"
+        >
           <FontAwesomeIcon icon={faTrash} color={AppColors.error} size={22} />
         </TouchableOpacity>
       );
@@ -153,7 +154,10 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
   };
 
   return (
-    <View className="flex-1 bg-gray-100" style={{paddingBottom: insets.bottom}}>
+    <View
+      className="flex-1 bg-gray-100"
+      style={{ paddingBottom: insets.bottom }}
+    >
       <HeaderComponent
         backButton={true}
         handleBack={() => navigate.goBack()}
@@ -162,7 +166,8 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
           <View className="flex-row items-center space-x-1">
             <TouchableOpacity
               onPress={getList}
-              className="p-2 active:opacity-60">
+              className="p-2 active:opacity-60"
+            >
               <FontAwesomeIcon
                 icon={faArrowsRotate}
                 size={20}
@@ -193,7 +198,7 @@ function GenericListPage<T extends {id?: any; [key: string]: any}>({
       <Pagination
         page={page}
         totalPage={totalPage}
-        onPageChange={newPage => setPage(newPage)}
+        onPageChange={(newPage) => setPage(newPage)}
       />
     </View>
   );

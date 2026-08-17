@@ -55,6 +55,12 @@ npx react-native-rename "TienPhongApp" -b com.tienphong.app --skipGitStatusCheck
 
 npx react-native set-icon --path src/Assets/imgs/icon-favicon.png
 
+## clear and install pod ios
+
+cd ios
+rm -rf Pods Podfile.lock TienPhongApp.xcworkspace
+pod install
+
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.

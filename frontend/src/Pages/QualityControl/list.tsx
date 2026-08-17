@@ -20,7 +20,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loadingStore } from "../../Store/loadingStore";
 import { TypeFormQCHeader } from "./type";
 import Toast from "react-native-toast-message";
-import { getApi, postApi, deleteApi } from "../../Base/api/api_service";
+import { getApi, postApi, deleteApi } from "../../Base/api/api_service__";
 import {
   QualityControlDetailAtom,
   QualityControlDetailID,
@@ -167,11 +167,12 @@ const QualityControlList = () => {
   const getList = async () => {
     setLoadingAtom(true);
     try {
-      const url = "/APIMobile/ShiftTestings";
-      const response = await getApi(url, { pageNumber: page, pageSize: 15 });
+      const url = "/APIMobile/ShiftTestingsPaging";
+      const response = await getApi(url, { page: page, pageSize: 15 });
 
       // console.log("Dữ liệu Server trả về:", response);
       if (response.success && response.data) {
+        const _data = response.data.Item;
         // const sortedData = [...response.data].sort((a, b) => {
         //   const soPhieuA = a.soPhieu || "";
         //   const soPhieuB = b.soPhieu || "";
@@ -181,15 +182,15 @@ const QualityControlList = () => {
         //   });
         // });
         // setList(sortedData);
-        const items = response.data || [];
+        const items = _data.Data || [];
 
         setList(items);
-        // setTotalPage(response.pagination.totalPages || 0);
+        setTotalPage(_data.TotalPages || 0);
       }
     } catch (error: any) {
       console.error("❌ Lỗi xảy ra tại hàm getList ở Page:", error);
       setList([]);
-      // setTotalPage(0);
+      setTotalPage(0);
     } finally {
       setLoadingAtom(false);
     }

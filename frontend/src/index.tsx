@@ -48,11 +48,11 @@ const AppNaivgate = () => {
           {userToken?.tokenID && userToken.tokenID !== null ? (
             <>
               <Stack.Screen name="Main" component={MainPage} />
+              <Stack.Screen name="Setting" component={SettingPage} />
               <Stack.Screen
                 name="QualityControlNavigate"
                 component={QualityControlNavigate}
               />
-              <Stack.Screen name="Setting" component={SettingPage} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginNavigate} />

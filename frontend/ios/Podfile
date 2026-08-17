@@ -25,6 +25,16 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+# 🌟 BẮT BUỘC: Import script của react-native-permissions trước khi dùng hàm setup_permissions
+node_modules_path = '../node_modules'
+require File.join(node_modules_path, 'react-native-permissions', 'scripts', 'setup.rb')
+
+setup_permissions([
+  'Camera',
+])
+
 target 'TienPhongApp' do
   config = use_native_modules!
 
